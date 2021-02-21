@@ -11,16 +11,31 @@
                 </div> -->
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-jet-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('user') }}" :active="request()->routeIs('user')">
-                        {{ __('User') }}
-                    </x-jet-nav-link>
-                </div>
+                @if(Auth::user()->is_admin)
+                    <!--
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-jet-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('user') }}" :active="request()->routeIs('user')">
+                            {{ __('User') }}
+                        </x-jet-nav-link>
+                    </div>
+                    -->
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('articulos') }}" :active="request()->routeIs('articulos')">
+                            {{ __('Articulos') }}
+                        </x-jet-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('articulosUser') }}" :active="request()->routeIs('articulosUser')">
+                            {{ __('Articulos de usuarios') }}
+                        </x-jet-nav-link>
+                    </div>
+
+                @endif
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-jet-nav-link href="{{ route('pedidos') }}" :active="request()->routeIs('pedidos')">
                         {{ __('Pedidos') }}
@@ -147,16 +162,30 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-jet-responsive-nav-link>
-        </div>
-        <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('user') }}" :active="request()->routeIs('user')">
-                {{ __('User') }}
-            </x-jet-responsive-nav-link>
-        </div>
+        @if(Auth::user()->is_admin)
+            <!--
+            <div class="pt-2 pb-3 space-y-1">
+                <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-jet-responsive-nav-link>
+            </div>
+            <div class="pt-2 pb-3 space-y-1">
+                <x-jet-responsive-nav-link href="{{ route('user') }}" :active="request()->routeIs('user')">
+                    {{ __('User') }}
+                </x-jet-responsive-nav-link>
+            </div>
+            -->
+            <div class="pt-2 pb-3 space-y-1">
+                <x-jet-responsive-nav-link href="{{ route('articulos') }}" :active="request()->routeIs('articulos')">
+                    {{ __('Articulos') }}
+                </x-jet-responsive-nav-link>
+            </div>
+            <div class="pt-2 pb-3 space-y-1">
+                <x-jet-responsive-nav-link href="{{ route('articulosUser') }}" :active="request()->routeIs('articulosUser')">
+                    {{ __('Articulos de usuarios') }}
+                </x-jet-responsive-nav-link>
+            </div>
+        @endif
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('pedidos') }}" :active="request()->routeIs('pedidos')">
                 {{ __('Pedidos') }}

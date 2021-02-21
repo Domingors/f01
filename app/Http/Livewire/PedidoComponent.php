@@ -2,58 +2,110 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\ArticuloUser;
 use Illuminate\Http\Request;
 use App\Models\LPedido;
+use App\Models\Pedido;
 use Livewire\Component;
 use Psy\Command\WhereamiCommand;
+use Illuminate\Support\Facades\Auth;
 
 class PedidoComponent extends Component
 {
-    public $idUser;
     public $pedido_id;
-    public $itemsPagina=0;
+    public $itemsPagina=0,$itemsArtsPagina=0;
     public $codigo, $descripcion, $cantidad, $precio, $articuloUser_id,$lPedido_id;
-    public $busqueda;
+    public $idUser, $idCabPed;
+    protected $cPedidos,$lPedidos;
+    public $busqueda, $busquedaArt;
+    public $accion='store';
+
+    protected $rules=[
+        'pedido_id'=>'required',
+        'articuloUser_id'=>'required',
+        'codigo'=>'required | max:10',
+        'descripcion'=>'required | max:50',
+        'cantidad'=>'required',
+        'precio'=>'required',
+    ];
+
+    protected $messages=[
+        'pedido_id.required'=>'el identificador de pedido es obligatorio',
+        'articuloUser_id.required'=>'el identificador del artículo del usuario es obligatorio',
+        'codigo.required'=>'el codigo es obligatorio',
+        'codigo.max'=>'el codigo no puede tener mas de 10 caracteres',
+        'descripcion.required'=>'la descripcion es obligatoria',
+        'descripcion.max'=>'la descripcion no puede tener mas de 50 caracteres',
+        'cantidad.required'=>'la cantidad es obligatoria',
+        'precio.required'=>'el precio es obligatorio',
+    ];
 
     public function render()
     {
-        
-        $lPedidos=LPedido::where('id','LIKE',"%{$this->busqueda}%")
-        ->orWhere('codigo','LIKE',"%{$this->busqueda}%")
-        ->orWhere('descripcion','LIKE',"%{$this->busqueda}%")
-        ->orWhere('cantidad','LIKE',"%{$this->busqueda}%")
-        ->orWhere('precio','LIKE',"%{$this->busqueda}%")
-        ->paginate($this->itemsPagina);
+        $this->idUser=Auth::user()->id;
 
-        return view('livewire.pedido-component',compact('lPedidos'));
-    }
-    
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-    }
+        $this->cPedidos=Pedido::orderBy('id','desc')
+        ->where('user_id',$this->idUser)
+        ->Where('estado',1)
+        ->get();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+        if(!empty(($this->cPedidos)[0])){
+            $this->idCabPed=($this->cPedidos)[0]->id;
+
+            $this->lPedidos=LPedido::orderBy('id','desc')
+            ->Where('pedido_id',$this->idCabPed)
+            ->Where('descripcion','LIKE',"%{$this->busqueda}%")
+//            ->orwhere('id','LIKE',"%{$this->busqueda}%")
+//            ->orWhere('codigo','LIKE',"%{$this->busqueda}%")
+//            ->orWhere('cantidad','LIKE',"%{$this->busqueda}%")
+//            ->orWhere('precio','LIKE',"%{$this->busqueda}%")
+            ->paginate($this->itemsPagina);
+
+            $arts=ArticuloUser::where('user_id',$this->idUser)
+            ->Where('descripcion','LIKE',"%{$this->busquedaArt}%")
+            ->paginate($this->itemsArtsPagina);
+            $lPeds=$this->lPedidos;
+            $cPeds=$this->cPedidos;
+                return view('livewire.pedido-component',compact('lPeds','cPeds','arts'));
+        }else{
+            Pedido::create([
+                'user_id'=>$this->idUser,
+            ]);
+            $this->nuevoPedido();
+            if(empty($cPedidos[0])){
+                $arts=ArticuloUser::where('user_id',$this->idUser)->paginate($this->itemsArtsPagina);
+                $lPeds=$this->lPedidos;
+                $cPeds=$this->cPedidos;
+                return view('livewire.pedido-component',compact('lPeds','cPeds'));
+            }    
+        }
+
+    }
+    public function nuevoPedido(){
+        $this->cPedidos=Pedido::orderBy('id','desc')
+        ->where('user_id',$this->idUser)
+        ->Where('estado',1)
+        ->paginate();
+
+
+        if(!empty($cPedidos[0])){
+            $this->idCabPed=($this->cPedidos)[0]->id;
+
+            $this->lPedidos=LPedido::orderBy('id','desc')
+            ->Where('pedido_id',$this->idCabPed)
+            ->Where('descripcion','LIKE',"%{$this->busqueda}%")
+//            ->orwhere('id','LIKE',"%{$this->busqueda}%")
+//            ->orWhere('codigo','LIKE',"%{$this->busqueda}%")
+//            ->orWhere('cantidad','LIKE',"%{$this->busqueda}%")
+//            ->orWhere('precio','LIKE',"%{$this->busqueda}%")
+            ->paginate($this->itemsPagina);
+        }
+
+    }
     public function store()
     {
+        $this->validate();
         LPedido::create([
             'pedido_id'=>$this->pedido_id,
             'articuloUser_id'=>$this->articuloUser_id,
@@ -62,26 +114,10 @@ class PedidoComponent extends Component
             'cantidad'=>$this->cantidad,
             'precio'=>$this->precio
         ]);
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
         return redirect('Pedidos');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit(LPedido $lPedi)
     {
         $this->lPedido_id=$lPedi->id;
@@ -91,45 +127,70 @@ class PedidoComponent extends Component
         $this->descripcion=$lPedi->descripcion;
         $this->cantidad=$lPedi->cantidad;
         $this->precio=$lPedi->precio;
+
+        $this->accion='update';
+        
+    }
+    public function editArt(ArticuloUser $art)
+    {
+//        $this->lPedido_id=$lPedi->id;
+        $this->pedido_id=$this->idCabPed;
+        $this->articuloUser_id=$art->id;
+        $this->codigo=$art->codigo;
+        $this->descripcion=$art->descripcion;
+//        $this->cantidad=$lPedi->cantidad;
+        $this->precio=$art->precio;
+
+        $this->accion='store';
+        
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request  $request, $id)
+    public function update()
     {
-        $lPedi=LPedido::find($id);
+        $this->validate();
 
-        $lPedi->lPedido_id=$request->get('lPedido_id');
-        $lPedi->pedido_id=$request->get('pedido_id');
-        $lPedi->articuloUser_id=$request->get('articuloUser_id');
-        $lPedi->codigo=$request->get('codigo');
-        $lPedi->descripcion=$request->get('descripcion');
-        $lPedi->cantidad=$request->get('cantidad');
-        $lPedi->precio=$request->get('precio');
+        $lPedi=LPedido::find($this->lPedido_id);
 
-        $lPedi->save();
+        $lPedi->update([
+            'pedido_id'=>$this->pedido_id,
+            'articuloUser_id'=>$this->articuloUser_id,
+            'codigo'=>$this->codigo,
+            'descripcion'=>$this->descripcion,
+            'cantidad'=>$this->cantidad,
+            'precio'=>$this->precio
+        ]);
+
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
+
+
+        return redirect('Pedidos');
+    }
+    public function putEstadoTerminado()
+    {
+
+        $Ped=Pedido::find($this->idCabPed);
+
+        $Ped->update([
+            'estado'=>2
+        ]);
+
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
+
 
         return redirect('Pedidos');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $lPedi=LPedido::find($id);
 
         $lPedi->delete();
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
 
         return redirect('Pedidos');
+    }
+    public function removeEdit(){
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
     }
 
 }
