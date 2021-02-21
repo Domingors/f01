@@ -96,7 +96,7 @@
                                                 <td class="px-6 py-4 whitespace-nowrap">{{ $art->descripcion }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap">{{ $art->precio }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    <a href="#" type="button" wire:click="editArt({{ $art }})" class="bg-yelow">Editar</a>
+                                                    <a href="#" type="button" wire:click="editArt({{ $art }})" class="bg-blue-500">Editar</a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -146,8 +146,8 @@
                                                 <td class="px-6 py-4 whitespace-nowrap">{{ $lped->cantidad }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap">{{ $lped->precio }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    <a href="#" type="button" wire:click="edit({{ $lped }})" class="bg-yelow">Editar</a>
-                                                    <a href="#" type="button" wire:click='destroy({{ $lped->id }})' class="btn btn-danger bg-red">Borrar</a>
+                                                    <a href="#" type="button" wire:click="edit({{ $lped }})" class="bg-green-500">Editar</a>
+                                                    <a href="#" type="button" wire:click='destroy({{ $lped->id }})' class="btn btn-danger bg-red-500">Borrar</a>
                                                 </td>
                                             </tr>
                                         @endforeach

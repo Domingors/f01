@@ -20,9 +20,13 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 Route::get('/', function () {
     return view('welcome');
+});
+*/
+Route::get('/', function () {
+    return view('auth.login2');
 });
 Route::get('User', UserTable::class)->name('user');
 Route::get('Pedidos', PedidoComponent::class)->name('pedidos');
