@@ -20,22 +20,22 @@
                         -->
                         <div class="mb-3 display=none">
                             <label for="" class="form-label">Pedido_id</label>
-                            <input wire:model='pedido_id' type="text" id="pedido_id" name='pedido_id' class="form-control" tabindex="2">
+                            <label wire:model='pedido_id' id="pedido_id" name='pedido_id' class="form-control">{{ $pedido_id }}</label>
                             @error('pedido_id')<p class="text-xs text-red-500 italic">{{ $message }}</p>@enderror
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-label">ArticuloUser_id</label>
-                            <input wire:model='articuloUser_id' type="text" id="articuloUser_id" name='articuloUser_id' class="form-control" tabindex="3">
+                            <label wire:model='articuloUser_id' id="articuloUser_id" name='articuloUser_id' class="form-control">{{ $articuloUser_id }}</label>
                             @error('articuloUser_id')<p>{{ $message }}</p>@enderror
                         </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Código</label>
-                                <input wire:model='codigo' type="text" id="codigo" name='codigo' class="form-control" tabindex="4">
+                                <label wire:model='codigo' id="codigo" name='codigo' class="form-control">{{ $codigo }}</label>
                                 @error('codigo')<p>{{ $message }}</p>@enderror
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Descripcion</label>
-                                <input wire:model='descripcion' type="text" id="descripcion"  class="form-control" tabindex="5">
+                                <label wire:model='descripcion' id="descripcion"  class="form-control">{{ $descripcion }}</label>
                                 @error('descripcion')<p>{{ $message }}</p>@enderror
                             </div>
                             <div class="mb-3">
@@ -46,7 +46,7 @@
                             <div class="mb-3">
                                 <label for="" class="form-label">Precio</label>
                                 @error('precio')<p>{{ $message }}</p>@enderror
-                                <input wire:model='precio' type="number" id="precio"  step="any" value="0.00" class="form-control" tabindex="7">
+                                <label wire:model='precio' id="precio"  step="any" value="0.00" class="form-control">{{ $precio }}</label>
                             </div>
             
                             <button wire:click='removeEdit' type="submmit" class="border-gray-200 btn btn-danger" tabindex="8">Cancelar</button>
