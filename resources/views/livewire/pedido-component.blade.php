@@ -58,7 +58,10 @@
                             <button wire:click='putEstadoTerminado' type="submmit" class="aling-center border-gray-200 bg-red-300 hover:gb-red-500 rounded" tabindex="10">Marcar como terminado</button>
                         </div>
                         <div class="flex flex-col p-2 mx-10">
-                            <label wire:model='descripcion' id="descripcion"  class="form-label">Pedido nº {{ $idCabPed }}</label>
+                            <label id="nºpedido"  class="form-label">Pedido nº {{ $idCabPed }}</label>
+                        </div>
+                        <div class="flex flex-col p-2 mx-10">
+                            <label id="importe"  class="form-label">Importe {{ $importe }}</label>
                         </div>
                     @endif
                 </div>

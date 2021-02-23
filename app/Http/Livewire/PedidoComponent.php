@@ -19,6 +19,7 @@ class PedidoComponent extends Component
     protected $cPedidos,$lPedidos;
     public $busqueda, $busquedaArt;
     public $accion='store';
+    public $importe=0.00;
 
     protected $rules=[
         'pedido_id'=>'required',
@@ -56,10 +57,6 @@ class PedidoComponent extends Component
             $this->lPedidos=LPedido::orderBy('id','desc')
             ->Where('pedido_id',$this->idCabPed)
             ->Where('descripcion','LIKE',"%{$this->busqueda}%")
-//            ->orwhere('id','LIKE',"%{$this->busqueda}%")
-//            ->orWhere('codigo','LIKE',"%{$this->busqueda}%")
-//            ->orWhere('cantidad','LIKE',"%{$this->busqueda}%")
-//            ->orWhere('precio','LIKE',"%{$this->busqueda}%")
             ->paginate($this->itemsPagina);
 
             $arts=ArticuloUser::where('user_id',$this->idUser)
@@ -67,7 +64,8 @@ class PedidoComponent extends Component
             ->paginate($this->itemsArtsPagina);
             $lPeds=$this->lPedidos;
             $cPeds=$this->cPedidos;
-                return view('livewire.pedido-component',compact('lPeds','cPeds','arts'));
+            $this->totalizar();
+            return view('livewire.pedido-component',compact('lPeds','cPeds','arts'));
         }else{
             Pedido::create([
                 'user_id'=>$this->idUser,
@@ -77,6 +75,7 @@ class PedidoComponent extends Component
                 $arts=ArticuloUser::where('user_id',$this->idUser)->paginate($this->itemsArtsPagina);
                 $lPeds=$this->lPedidos;
                 $cPeds=$this->cPedidos;
+                $this->totalizar();
                 return view('livewire.pedido-component',compact('lPeds','cPeds'));
             }    
         }
@@ -95,10 +94,6 @@ class PedidoComponent extends Component
             $this->lPedidos=LPedido::orderBy('id','desc')
             ->Where('pedido_id',$this->idCabPed)
             ->Where('descripcion','LIKE',"%{$this->busqueda}%")
-//            ->orwhere('id','LIKE',"%{$this->busqueda}%")
-//            ->orWhere('codigo','LIKE',"%{$this->busqueda}%")
-//            ->orWhere('cantidad','LIKE',"%{$this->busqueda}%")
-//            ->orWhere('precio','LIKE',"%{$this->busqueda}%")
             ->paginate($this->itemsPagina);
         }
 
@@ -114,6 +109,7 @@ class PedidoComponent extends Component
             'cantidad'=>$this->cantidad,
             'precio'=>$this->precio
         ]);
+        $this->totalizar();
         $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
         return redirect('Pedidos');
     }
@@ -133,12 +129,10 @@ class PedidoComponent extends Component
     }
     public function editArt(ArticuloUser $art)
     {
-//        $this->lPedido_id=$lPedi->id;
         $this->pedido_id=$this->idCabPed;
         $this->articuloUser_id=$art->id;
         $this->codigo=$art->codigo;
         $this->descripcion=$art->descripcion;
-//        $this->cantidad=$lPedi->cantidad;
         $this->precio=$art->precio;
 
         $this->accion='store';
@@ -160,6 +154,7 @@ class PedidoComponent extends Component
             'precio'=>$this->precio
         ]);
 
+        $this->totalizar();
         $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
 
 
@@ -174,6 +169,7 @@ class PedidoComponent extends Component
             'estado'=>2
         ]);
 
+        $this->totalizar();
         $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
 
 
@@ -185,12 +181,34 @@ class PedidoComponent extends Component
         $lPedi=LPedido::find($id);
 
         $lPedi->delete();
+        $this->totalizar();
         $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
 
         return redirect('Pedidos');
     }
     public function removeEdit(){
+        $this->totalizar();
         $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articuloUser_id','lPedido_id','pedido_id','idUser','accion']);
+    }
+    public function totalizar(){
+        $this->idUser=Auth::user()->id;
+
+        $cabeceras=Pedido::orderBy('id','desc')
+        ->where('user_id',$this->idUser)
+        ->Where('estado',1)
+        ->get();
+
+        $id=$cabeceras[0]->id;
+
+        $lineas=LPedido::orderBy('id','desc')
+        ->Where('pedido_id',$id)
+        ->get();
+
+        $total=0.00;
+        foreach ($lineas as $l) {
+            $total+=($l->cantidad)*($l->precio);
+        }
+        $this->importe=$total;
     }
 
 }
