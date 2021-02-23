@@ -1,5 +1,5 @@
 <div>
-    <div class="py-12  flex items-center justify-between">
+    <div class="py-12  flex items-center justify-between ">
         <div class="max-w-2xl mx-auto">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg flex">
                 <div class="bg-white-500 rounded-lb shadow hoverflow-hiden p-4">
@@ -55,7 +55,7 @@
                 <div class="bg-white-500 rounded-lb shadow overflow-hiden p-4">
                     @if($lPeds != null)
                         <div class="flex flex-col p-2 mx-10">
-                            <button wire:click='putEstadoTerminado' type="submmit" class="aling-center border-gray-200 bg-red-300 hover:gb-red-500 rounded" tabindex="10">Cambiar estado</button>
+                            <button wire:click='putEstadoTerminado' type="submmit" class="aling-center border-gray-200 bg-red-300 hover:gb-red-500 rounded" tabindex="10">Marcar como terminado</button>
                         </div>
                         <div class="flex flex-col p-2 mx-10">
                             <label wire:model='descripcion' id="descripcion"  class="form-label">Pedido nº {{ $idCabPed }}</label>
@@ -118,7 +118,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $lped->precio }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a href="#" type="button" wire:click="edit({{ $lped }})" class="bg-green-300 hover:gb-green-700 rounded">Editar</a>
-                                        <a href="#" type="button" wire:click='destroy({{ $lped->id }})' class="bg-red-500 hover:gb-red-700 rounded">Borrar</a>
+                                        <a href="#" type="button" wire:click='destroy({{ $lped->id }})' class="bg-red-300 hover:gb-red-700 rounded">Borrar</a>
                                     </td>
                                 </tr>
                             @endforeach
