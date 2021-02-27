@@ -13,6 +13,7 @@ class ArticuloUser extends Model
         'articulo_id',
         'codigo',
         'descripcion',
+        'cantidad',
         'precio',
     ];
 }

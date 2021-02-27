@@ -3,26 +3,6 @@
         <div class="max-w-2xl mx-auto">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg flex">
                 <div class="bg-white-500 rounded-lb shadow hoverflow-hiden p-4">
-                    <div class="mb-3" style="display:none">
-                        <label for="" class="form-label">Id</label>
-                        <input wire:model='id' type="text" id="id" name='id' class="form-label" tabindex="1">
-                        @error('id')<p>{{ $message }}</p>@enderror
-                    </div>
-                    <div class="mb-3" style="display:none">
-                        <label for="" class="form-label">User_id</label>
-                        <label wire:model='user_id' id="user_id" name='user_id' class="form-label">{{ $user_id }}</label>
-                        @error('user_id')<p class="text-xs text-red-500 italic">{{ $message }}</p>@enderror
-                    </div>
-                    <div class="mb-3" style="display:none">
-                        <label for="" class="form-label">Articulo_id</label>
-                        <label wire:model='articulo_id' id="articulo_id" name='articulo_id' class="form-label">{{ $articulo_id }}</label>
-                        @error('articuloUser_id')<p>{{ $message }}</p>@enderror
-                    </div>
-                    <div class="mb-3" style="display:none">
-                        <label for="" class="form-label">Código</label>
-                        <input wire:model='codigo' id="codigo" name='codigo' type="text" class="form-control"/>
-                        @error('codigo')<p>{{ $message }}</p>@enderror
-                    </div>
                     <div class="mb-3">
                         <label for="" class="form-label">Descripcion</label>
                         <input wire:model='descripcion' id="descripcion" type="text" class="form-control"/>
@@ -33,7 +13,6 @@
                         <input wire:model='precio' id="precio"  type="number" step="any" value="0.00" class="form-control"/>
                         @error('precio')<p>{{ $message }}</p>@enderror
                     </div>
-                    
                     <div class="bg-gray-100 flex p-2  flex items-center justify-between">
                         <div class="align=left">
                             <button wire:click='removeEdit' type="submmit" class="border-gray-200 bg-red-100 hover:gb-red-300 rounded" tabindex="8">Cancelar</button>
@@ -47,6 +26,21 @@
                         </div>
                     </div>
                 </div>
+                <div class="bg-white-500 rounded-lb shadow hoverflow-hiden p-4">
+                    <div class="form-group">
+                        <h2>Usuarios</h2>
+                        <select wire:model="idUser" class="form-control" name="idUser" required >
+                            @foreach($users as $user)
+                                <option  value="{{$user->id}}"> {{$user->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex flex-col p-2 mx-10">
+                        <!--<button wire:click='makePdf' type="submmit" class="aling-center border-gray-200 bg-blue-300 hover:gb-blue-500 rounded" tabindex="10">Generar pdf</button>-->
+                        <a href="#" type="button" wire:click="makePdf" class="bg-blue-300 hover:gb-blue-500 rounded">Generar pdf</a>
+                        <!--<a href="articulosUserPdf" type="button" wire:click="makePdf" class="bg-blue-300 hover:gb-blue-500 rounded">Generar pdf</a>-->
+                    </div>
+            </div>
             </div>
         </div>
     </div>

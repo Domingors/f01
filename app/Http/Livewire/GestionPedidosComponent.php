@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class GestionPedidosComponent extends Component
 {
     public $idUser;
+    public $is_admin;
     public $idCabPed;
     public $estado=2;
     public $itemsPagina=0;
@@ -20,36 +21,40 @@ class GestionPedidosComponent extends Component
     {
         if($this->idUser==null)
         $this->idUser=Auth::user()->id;
+        $this->is_admin=Auth::user()->is_admin;
 
         $this->usuarios=User::all();
 
         $this->reloadPeds();
+        $isAdmin=$this->is_admin;
         $users=$this->usuarios;
         $estads=$this->estados;
         $cPeds=$this->cPedidos;
 
-        return view('livewire.gestion-pedidos-component',compact('users','estads','cPeds'));
+        return view('livewire.gestion-pedidos-component',compact('isAdmin','users','estads','cPeds'));
     }
     public function updatedIdUser()
     {
         $this->reloadPeds();
+        $isAdmin=$this->is_admin;
         $users=$this->usuarios;
         $estads=$this->estados;
         $cPeds=$this->cPedidos;
 
-        return view('livewire.gestion-pedidos-component',compact('users','estads','cPeds'));
+        return view('livewire.gestion-pedidos-component',compact('isAdmin','users','estads','cPeds'));
     }
     public function updatedEstado()
     {
         $this->reloadPeds();
+        $isAdmin=$this->is_admin;
         $users=$this->usuarios;
         $estads=$this->estados;
         $cPeds=$this->cPedidos;
 
-        return view('livewire.gestion-pedidos-component',compact('users','estads','cPeds'));
+        return view('livewire.gestion-pedidos-component',compact('isAdmin','users','estads','cPeds'));
     }
     public function reloadPeds(){
-        $this->estados=[[1,'Incompleto'],[2,'Pendiente'],[3,'Entregado']];
+        $this->estados=[[1,'Incompleto'],[2,'Terminado'],[3,'Entregado']];
 
         $this->cPedidos=Pedido::orderBy('id','desc')
         ->where('user_id',$this->idUser)
@@ -68,9 +73,28 @@ class GestionPedidosComponent extends Component
         $ped->update([
             'estado'=>3
         ]);
-        return redirect('GestionPedidos');
+        $this->reloadPeds();
+//        return redirect('GestionPedidos');
     }
-    public function pedToPdf($id)
+    public function putEstadoTerminado($id)
+    {
+        $ped=Pedido::find($id);
+        $ped->update([
+            'estado'=>2
+        ]);
+        $this->reloadPeds();
+//        return redirect('GestionPedidos');
+    }
+    public function putEstadoIncompleto($id)
+    {
+        $ped=Pedido::find($id);
+        $ped->update([
+            'estado'=>1
+        ]);
+        $this->reloadPeds();
+//        return redirect('GestionPedidos');
+    }
+    public function makePdf($id)
     {
     }
     public function destroy($id)

@@ -5,16 +5,19 @@ namespace App\Http\Livewire;
 use App\Models\ArticuloUser;
 use Illuminate\Http\Request;
 use App\Models\Articulo;
+use App\Models\User;
 use Livewire\Component;
 use Psy\Command\WhereamiCommand;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class ArticuloUserComponent extends Component
 {
     public $lArtUser_id;
     public $itemsArtsPagina=0,$itemsArtsUserPagina=0;
     public $codigo, $descripcion, $cantidad, $precio, $articulo_id;
-    public $user_id;
+    protected $lArts,$lArtsUser,$usuarios;
+    public $idUser;
     public $busquedaArt, $busquedaArtUser;
     public $accion='store';
 
@@ -32,36 +35,54 @@ class ArticuloUserComponent extends Component
 
     public function render()
     {
+        if($this->idUser==null)
         $this->idUser=Auth::user()->id;
 
-        $arts=Articulo::Where('descripcion','LIKE',"%{$this->busquedaArt}%")
+        $this->usuarios=User::all();
+
+        $this->reload();
+        $users=$this->usuarios;
+        $arts=$this->lArts;
+        $artsUser=$this->lArtsUser;
+        return view('livewire.articulo-user-component',compact('users','arts','artsUser'));
+
+    }
+    public function updatedIdUser()
+    {
+        $this->reload();
+        $users=$this->usuarios;
+        $arts=$this->lArts;
+        $artsUser=$this->lArtsUser;
+        return view('livewire.articulo-user-component',compact('users','arts','artsUser'));
+    }
+    public function reload(){
+        $this->lArts=Articulo::Where('descripcion','LIKE',"%{$this->busquedaArt}%")
         ->paginate($this->itemsArtsPagina);
 
-        $artsUser=ArticuloUser::where('user_id',$this->idUser)
+        $this->lArtsUser=ArticuloUser::where('user_id',$this->idUser)
         ->Where('descripcion','LIKE',"%{$this->busquedaArtUser}%")
         ->paginate($this->itemsArtsUserPagina);
-        return view('livewire.articulo-user-component',compact('arts','artsUser'));
 
     }
     public function store()
     {
         $this->validate();
         ArticuloUser::create([
-            'user_id'=>$this->user_id,
+            'user_id'=>$this->idUser,
             'articulo_id'=>$this->articulo_id,
             'codigo'=>$this->codigo,
             'descripcion'=>$this->descripcion,
             'cantidad'=>$this->cantidad,
             'precio'=>$this->precio
         ]);
-        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','user_id','lArtUser_id','accion']);
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','lArtUser_id','accion']);
         return redirect('ArticulosUser');
     }
 
     public function editArtUser(ArticuloUser $lArtUser)
     {
         $this->lArtUser_id=$lArtUser->id;
-        $this->user_id=$lArtUser->user_id;
+        $this->idUser=$lArtUser->user_id;
         $this->articulo_id=$lArtUser->articulo_id;
         $this->codigo=$lArtUser->codigo;
         $this->descripcion=$lArtUser->descripcion;
@@ -73,9 +94,9 @@ class ArticuloUserComponent extends Component
     }
     public function editArt(Articulo $art)
     {
-        $this->idUser=Auth::user()->id;
+//        $this->idUser=Auth::user()->id;
 
-        $this->user_id=$this->idUser;
+//        $this->user_id=$this->idUser;
         $this->articulo_id=$art->id;
         $this->codigo=$art->codigo;
         $this->descripcion=$art->descripcion;
@@ -93,7 +114,7 @@ class ArticuloUserComponent extends Component
         $lArtUser=ArticuloUser::find($this->lArtUser_id);
 
         $lArtUser->update([
-            'user_id'=>$this->user_id,
+            'user_id'=>$this->idUser,
             'articuloUser_id'=>$this->articulo_id,
             'codigo'=>$this->codigo,
             'descripcion'=>$this->descripcion,
@@ -101,7 +122,7 @@ class ArticuloUserComponent extends Component
             'precio'=>$this->precio
         ]);
 
-        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','user_id','lArtUser_id','accion']);
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','lArtUser_id','accion']);
 
 
         return redirect('ArticulosUser');
@@ -112,12 +133,26 @@ class ArticuloUserComponent extends Component
         $lArtUser=ArticuloUser::find($id);
 
         $lArtUser->delete();
-        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','user_id','lArtUser_id','accion']);
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','lArtUser_id','accion']);
 
         return redirect('ArticulosUser');
     }
     public function removeEdit(){
-        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','user_id','lArtUser_id','accion']);
+        $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','lArtUser_id','accion']);
+    }
+    public function makePdf()
+    {
+        $this->lArtsUser=ArticuloUser::where('user_id',1)
+        ->get();
+
+        $artsUser=$this->lArtsUser;
+        $num=ArticuloUser::where('user_id',1)->count();
+        $a="cosa";
+          
+        $pdf = PDF::loadView('pdfs.articulosUser', compact('artsUser','num','a'));
+    
+        return $pdf->stream();
+//        return $pdf->download('itsolutionstuff.pdf');    
     }
 
 }

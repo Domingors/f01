@@ -5,10 +5,7 @@ use App\Http\Livewire\ArticuloUserComponent;
 use App\Http\Livewire\GestionPedidosComponent;
 use App\Http\Livewire\PedidoComponent;
 use App\Http\Livewire\UserTable;
-use App\Models\ArticuloUser;
-use App\Models\User;
-use App\Models\Pedido;
-use App\View\Components\AppLayout;
+use App\Http\Livewire\ImportComponent;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,8 +31,13 @@ Route::get('GestionPedidos', GestionPedidosComponent::class)->name('gestionPedid
 Route::get('Pedidos', PedidoComponent::class)->name('pedidos');
 Route::get('Articulos', ArticuloComponent::class)->name('articulos');
 Route::get('ArticulosUser', ArticuloUserComponent::class)->name('articulosUser');
-
+Route::get('articulosUserPdf', [ArticuloUserComponent::class, 'makePDF'])->name('articulosUserPdf');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('ImportArt', [ImportComponent::class,'getImportArt'])->name('importArt');
+Route::post('ImportArt_parse', [ImportComponent::class,'parseImportArt'])->name('importArt_parse');
+Route::get('ImportArtUsr', [ImportComponent::class,'getImportArtUsr'])->name('importArtUsr');
+Route::post('ImportArtUsr_parse', [ImportComponent::class,'parseImportArtUsr'])->name('importArtUsr_parse');
