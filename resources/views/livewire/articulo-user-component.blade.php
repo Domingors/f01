@@ -41,7 +41,6 @@
                         <!--<a href="articulosUserPdf" type="button" wire:click="makePdf" class="bg-blue-300 hover:gb-blue-500 rounded">Generar pdf</a>-->
                         <a href="artUserPdf/{{ $idUser }}" class="bg-blue-300 hover:gb-blue-500 rounded">Generar pdf</a>
                     </div>
-                    {{$cosa}}
             </div>
             </div>
         </div>
