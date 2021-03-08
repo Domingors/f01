@@ -37,9 +37,11 @@
                     </div>
                     <div class="flex flex-col p-2 mx-10">
                         <!--<button wire:click='makePdf' type="submmit" class="aling-center border-gray-200 bg-blue-300 hover:gb-blue-500 rounded" tabindex="10">Generar pdf</button>-->
-                        <a href="#" type="button" wire:click="makePdf" class="bg-blue-300 hover:gb-blue-500 rounded">Generar pdf</a>
+                        <!--<a href="#" type="button" wire:click="makePdf" class="bg-blue-300 hover:gb-blue-500 rounded">Generar pdf</a>-->
                         <!--<a href="articulosUserPdf" type="button" wire:click="makePdf" class="bg-blue-300 hover:gb-blue-500 rounded">Generar pdf</a>-->
+                        <a href="artUserPdf/{{ $idUser }}" class="bg-blue-300 hover:gb-blue-500 rounded">Generar pdf</a>
                     </div>
+                    {{$cosa}}
             </div>
             </div>
         </div>

@@ -68,7 +68,7 @@
                                         @if($isAdmin)
                                                 <a href="#" type="button" wire:click="putEstadoEntregado({{ $cPed->id }})" class="bg-green-200 hover:gb-green-700 rounded">Marcar entregado</a>
                                         @endif
-                                        <a href="#" type="button" wire:click='makePdf({{ $cPed->id }})' class="bg-blue-300 hover:gb-blue-700 rounded">Generar pdf</a>
+                                        <a href="artPediPdf/{{ $cPed->id }}" type="button" wire:click='makePdf({{ $cPed->id }})' class="bg-blue-300 hover:gb-blue-700 rounded">Generar pdf</a>
                                         @if($isAdmin)
                                             <a href="#" type="button" wire:click='destroy({{ $cPed->id }})' class="bg-red-300 hover:gb-red-700 rounded">Borrar</a>
                                         @endif

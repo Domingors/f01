@@ -9,7 +9,6 @@ use App\Models\User;
 use Livewire\Component;
 use Psy\Command\WhereamiCommand;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade as PDF;
 
 class ArticuloUserComponent extends Component
 {
@@ -139,20 +138,6 @@ class ArticuloUserComponent extends Component
     }
     public function removeEdit(){
         $this->reset(['codigo', 'descripcion', 'cantidad', 'precio', 'articulo_id','lArtUser_id','accion']);
-    }
-    public function makePdf()
-    {
-        $this->lArtsUser=ArticuloUser::where('user_id',1)
-        ->get();
-
-        $artsUser=$this->lArtsUser;
-        $num=ArticuloUser::where('user_id',1)->count();
-        $a="cosa";
-          
-        $pdf = PDF::loadView('pdfs.articulosUser', compact('artsUser','num','a'));
-    
-        return $pdf->stream();
-//        return $pdf->download('itsolutionstuff.pdf');    
     }
 
 }

@@ -9,14 +9,16 @@ use App\Models\CsvData;
 use App\Models\Articulo;
 use App\Models\ArticuloUser;
 use App\Models\User;
+use Psy\Command\WhereamiCommand;
+use Livewire\WithFileUploads;
 
-class ImportComponent extends Component
+class Importaciones extends Component
 {
-    public $csv_data_file;
-    
+    use WithFileUploads;
+
     public function render()
     {
-//        return view('livewire.import-component');
+        return view('livewire.importaciones');
     }
     public function getImportArt()
     {
@@ -30,24 +32,22 @@ class ImportComponent extends Component
     {
         $path = $request->file('csv_file')->getRealPath();
         $data = array_map('str_getcsv', file($path));
-
+    
         $this->csv_data_file = CsvData::create([
             'csv_filename' => $request->file('csv_file')->getClientOriginalName(),
-//            'csv_header' => $request->has('header'),
             'csv_data' => json_encode($data)
         ]);
 
         $this->processImportArt();
-            return redirect('/dashboard');
+        return redirect('/dashboard');
     }
     public function parseImportArtUsr(CsvImportRequest $request)
     {
         $path = $request->file('csv_file')->getRealPath();
         $data = array_map('str_getcsv', file($path));
-
+    
         $this->csv_data_file = CsvData::create([
             'csv_filename' => $request->file('csv_file')->getClientOriginalName(),
-//            'csv_header' => $request->has('header'),
             'csv_data' => json_encode($data)
         ]);
 
